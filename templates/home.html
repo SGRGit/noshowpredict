@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ShowNoShow</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="../static/css/materialdesignicons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="../static/images/favicon.png" />
+
+    <script type="text/javascript" src="../static/json/patient_data.json" crossorigin="anonymous"></script>
+
+    <style type="text/css">
+        
+    </style>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:partials/_navbar.html -->
+      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+         
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-stretch">
+          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <div style="margin-top: 20px;">
+            <h3>Day At A Glance</h3>  
+          </div>
+          <ul class="navbar-nav navbar-nav-right">
+            <li class="nav-item nav-profile dropdown">
+              <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+                <div class="nav-profile-img">
+                  <img src="../static/images/face0.jpg" alt="image">
+                  <span class="availability-status online"></span>
+                </div>
+                <div class="nav-profile-text">
+                  <p class="mb-1 text-black">Sudipto</p>
+
+                </div>
+              </a>
+              <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                <a class="dropdown-item" href="#"> Activity Log </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#"> Signout </a>
+              </div>
+            </li>
+            <li class="nav-item d-none d-lg-block full-screen-link">
+              <a class="nav-link">
+                <i class="fa fa-compress" id="fullscreen-button"></i>
+              </a>
+            </li>            
+          </ul>
+          
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dashboard')}}">
+                <span class="menu-title">Dashboard</span>
+                <i style="padding-left: 10px" class="fa fa-home"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('appointment')}}">
+                <span class="menu-title">Schedule Appointment</span>
+                <i style="padding-left: 10px" class="fa fa-calendar"></i>
+              </a>
+              
+            </li>
+            
+          </ul>
+        </nav>
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+           
+            <div class="page-header">
+              <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                 <i class="fa fa-home"></i>
+                </span> Dashboard </h3>
+              <nav aria-label="breadcrumb">
+                <!-- <ul class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">
+                    
+                  </li> 
+
+                </ul> -->
+                <div class="form-inline">
+                  <div class="btn-group">
+                   <div class="col-sm-12 col-md-6">
+                      <select id="department" class="form-control" style="background-color: #66b3ff; color: black; font-weight: bold;">
+                        <option value="none">Select Department</option>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="Gastrology">Gastrology</option>
+                        <option value="Orthopedics">Orthopedics</option>
+                      </select> 
+                      
+                    </div>                    
+                  </div>
+                  <div class="btn-group">
+                   <div class="col-sm-12 col-md-6">                      
+                      <select id="dates" class="form-control" style="background-color: #5cd6d6; color: black; font-weight: bold">
+                        <option value="none">Select Date</option>
+                        <option value="1">Tomorrow</option>
+                        <option value="7">Within 7 Days</option>
+                        <option value="30">Within 1 Month</option>
+                        <option value="90">Within 3 Month</option>
+                      </select> 
+                    </div>                    
+                  </div>
+                  <!-- <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
+                        <input class="form-control" type="text" readonly />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div> -->
+                </div>
+              </nav>
+            </div>
+            <div class="row">
+              <div class="col-md-9">
+                  <div class="row">
+                    <div class="col-md-3 grid-margin">
+                      <div class="card bg-gradient-info card-img-holder text-white" style="max-height: 160px;">
+                        <div class="card-body">
+                          <img src="../static/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                          <h4 class="font-weight-normal mb-3">Appointment Planned 
+                          </h4>
+                          <h2 class="mb-5" id="total">0</h2>
+                          <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 stretch-card grid-margin">
+                      <div class="card bg-gradient-danger card-img-holder text-white" style="max-height: 160px;">
+                        <div class="card-body">
+                          <img src="../static/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                          <h4 class="font-weight-normal mb-3">No Show Counts 
+                          </h4>
+                          <h2 class="mb-5" id="totalNoShow">0</h2>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 stretch-card grid-margin">
+                      <div class="card bg-gradient-success card-img-holder text-white" style="max-height: 160px;">
+                        <div class="card-body">
+                          <img src="../static/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                          <h4 class="font-weight-normal mb-3">Appointment Confirmed 
+                          </h4>
+                          <h2 class="mb-5" id="noIssue">0</h2>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 stretch-card grid-margin">
+                      <div class="card bg-gradient-warning card-img-holder text-white" style="max-height: 160px;">
+                        <div class="card-body">
+                          <img src="../static/images/circle.svg" class="card-img-absolute" alt="circle-image" />
+                          <h4 class="font-weight-normal mb-3">High probalility 
+                          </h4>
+                          <h2 class="mb-5" id="highProbable">0</h2>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                      <div class="card">
+                        <div class="card-header">
+                          <h4 class="card-title float-left">Appointment List</h4>
+                        </div>
+                        <div class="card-body">
+                          <div class="clearfix">
+                            <table class="table table-striped" style="position: relative;height: 250px;overflow: auto;display: block;">
+                              <thead>
+                                <tr >
+                                  <!-- <th></th> -->
+                                  <th> Patient Name </th>
+                                  <th> Department </th>
+                                  <th> Age </th>
+                                  <th> SMS Sent </th>
+                                  <th> Appointment Date </th>
+                                  <th> Schedule Date </th>
+                                  <th> Probability </th>
+                                </tr>
+                              </thead>
+                              <tbody id="tableData">                          
+                              </tbody>
+                            </table>
+                          </div>
+                          <!-- <canvas id="visit-sale-chart" class="mt-4"></canvas> -->
+                        </div>
+                      </div>
+                    </div>              
+                  </div>
+              </div>
+              <div class="col-md-3">
+                  <div class="card">
+                      <div class="card-header">
+                        <h4 class="card-title float-left">Week Wise Detail</h4>
+                      </div>
+                      <div class="card-body" style="margin: auto;position: relative;height: 550px;overflow-y: auto;display: block;">
+                        <div class="clearfix" >
+                           <div class="row" data-toggle="modal" data-target="#myModal" style="cursor: pointer;">
+                             <div class="card bg-gradient-success text-white">
+                              <div class="card-body" style="padding: 15px; text-align: center;">                                
+                                <h4 id="dayVal" style="font-weight: bold;"><u>Thursday </u></h4>
+                                <h5>(19/12/2019)</h5>
+                                <h5 id="probVal">Chances : 30%</h5>
+                                <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                              </div>
+                            </div>
+                           </div>
+                           <div class="row" style="margin-top: 5px;">
+                             <div class="card bg-gradient-danger text-white">
+                              <div class="card-body" style="padding: 15px; text-align: center;">                                
+                                <h4 id="dayVal" style="font-weight: bold;"><u>Friday</u></h4>
+                                <h5>(20/12/2019)</h5>
+                                <h5 id="probVal" >Chances : 30%</h5>
+                                <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                              </div>
+                            </div>
+                           </div>
+                           <div class="row" style="margin-top: 5px;">
+                             <div class="card bg-gradient-danger text-white">
+                              <div class="card-body" style="padding: 15px; text-align: center;">                                
+                                <h4 id="dayVal" style="font-weight: bold;"><u>Saturday</u></h4>
+                                <h5>(21/12/2019)</h5>
+                                <h5 id="probVal">Chances : 30%</h5>
+                                <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                              </div>
+                            </div>
+                           </div>
+                           <div class="row" style="margin-top: 5px;">
+                             <div class="card bg-gradient-success text-white">
+                              <div class="card-body" style="padding: 15px; text-align: center;">                                
+                                <h4 id="dayVal" style="font-weight: bold;"><u>Sunday</u></h4>
+                                <h5>(22/12/2019)</h5>
+                                <h5 id="probVal" >Chances : 30%</h5>
+                                <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                              </div>
+                            </div>
+                           </div>
+                           <div class="row" style="margin-top: 5px;">
+                             <div class="card bg-gradient-success text-white">
+                              <div class="card-body" style="padding: 15px; text-align: center;">                                
+                                <h4 id="dayVal" style="font-weight: bold;"><u>Monday</u></h4>
+                                <h5>(23/12/2019)</h5>
+                                <h5 id="probVal" >Chances : 30%</h5>
+                                <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                              </div>
+                            </div>
+                           </div>
+                           <div class="row" style="margin-top: 5px;">
+                             <div class="card bg-gradient-danger text-white">
+                              <div class="card-body" style="padding: 15px; text-align: center;">                                
+                                <h4 id="dayVal" style="font-weight: bold;"><u>Tuesday </u></h4>
+                                <h5>(24/12/2019)</h5>
+                                <h5 id="probVal" >Chances : 30%</h5>
+                                <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                              </div>
+                            </div>
+                           </div>
+                           <div class="row" style="margin-top: 5px;">
+                             <div class="card bg-gradient-success text-white">
+                              <div class="card-body" style="padding: 15px; text-align: center;">                                
+                                <h4 id="dayVal" style="font-weight: bold;"><u>Wednesday</u></h4>
+                                <h5>(25/12/2019)</h5>
+                                <h5 id="probVal" >Chances : 30%</h5>
+                                <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                              </div>
+                            </div>
+                           </div>
+                        </div>
+                      </div>
+                    </div>
+              </div>
+            </div>
+
+            <div id="myModal" class="modal fade" role="dialog" style="margin: auto;">
+              <div class="modal-dialog modal-sm">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Total Appointments : 20</p>
+                    <p>Total No show : 10</p>
+                    <p>Total Confirmed : 5</p>
+                  </div>
+                  
+                </div>
+
+              </div>
+            </div>
+            
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <footer class="footer">
+            
+          </footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="../static/js/vendor.bundle.base.js"></script>    
+    <script src="../static/js/misc.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
+    <script type="text/javascript">      
+
+      $(function () {
+
+        $("#datepicker").datepicker({ 
+            autoclose: true, 
+            todayHighlight: true
+        }).datepicker('update', new Date());
+        
+      });
+
+      //=====read json======// 
+        
+     /* var data = '[{"pt": "xyz","dept": "cardiology","age": 12,"sms": 0,"apdt": "2019-12-14",'+
+      '"scdt": "2020-01-15","pred": 24.5},{"pt": "wef","dept": "orthopedics","age": 12,"sms": 0,'+
+      '"apdt": "2019-12-14","scdt": "2019-12-31","pred": 27.44},{"pt": "abc","dept": "orthopedics","age": 12,'+
+      '"sms": 0,"apdt": "2019-12-14","scdt": "2019-12-18","pred": 57.44}]';   */   
+      
+      var myobj = JSON.parse(data);
+      var today = new Date();        
+      var todate = today.getDate();
+      var tomonth = today.getMonth()+1;
+      var toyear = today.getFullYear();
+
+      $('select').on('change', function() {  
+        //location.reload(true);
+        var count = 0;
+        var noshowCount = 0;     
+        var tableData = '';
+        var confirmedCount = 0;
+        for (var i = 0; i < myobj.length; i++){
+
+          if ($( "#department" ).val() == myobj[i].dept) {                         
+
+              var CurDate = myobj[i].scdt;
+              var CDate = new Date(CurDate);
+              const diffTime = Math.abs(CDate - today);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+              //alert(diffDays);
+              if ($("#dates").val() > diffDays) {
+                count++;
+                if (myobj[i].Confirmed == 1) {
+                  confirmedCount++;
+                }
+                if (myobj[i].pred > 50) {
+                  noshowCount++;
+                }
+                  tableData += '<tr>';        
+                  //tableData += '<td class="py-1"><img src="../static/images/face0.jpg" alt="image" /></td>';
+                  tableData += '<td>';
+                  tableData += myobj[i].pt;
+                  tableData += '</td>';
+                  tableData += '<td>';
+                  tableData += myobj[i].dept;
+                  tableData += '</td>';
+                  tableData += '<td>';
+                  tableData += myobj[i].age;
+                  tableData += '</td>';
+                  tableData += '<td>';
+                  tableData += myobj[i].sms;
+                  tableData += '</td>';
+                  tableData += '<td>';
+                  tableData += myobj[i].apdt;
+                  tableData += '</td>';
+                  tableData += '<td>';
+                  tableData += myobj[i].scdt;
+                  tableData += '</td>';                  
+                  if (myobj[i].pred > 50) {
+                    tableData += '<td style="color: red;">';
+                    tableData += myobj[i].pred;
+                    tableData += '</td>';
+                  }else{
+                    tableData += '<td>';
+                    tableData += myobj[i].pred;
+                    tableData += '</td>';
+                  }                                    
+                  tableData += '</tr>';
+              }              
+          }        
+        }
+        document.getElementById('tableData').innerHTML = tableData;
+        document.getElementById('total').innerHTML = count;
+        document.getElementById('totalNoShow').innerHTML = noshowCount;
+        document.getElementById('noIssue').innerHTML = confirmedCount;
+      });
+    </script>
+  </body>
+</html>
